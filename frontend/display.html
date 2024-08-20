@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The leading XML to PDF Converter for Freelancers!">
+    <title>Sherlock Invoice Viewer</title>
+    <link rel="stylesheet" href="/style/display.css">
+    <link rel="stylesheet" href="/style/header.css">
+</head>
+<body>
+    <header>
+        SHERLOCK E-INVOICING 🔎
+        <div id="headerButtons">
+            <button id="homeButton">Home</button>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </header>
+
+    <div class="popup" id="popup">
+        <h2>Exiting Sherlock</h2>
+        <p>Are you sure you would like to logout?</p>
+        <button type="button" id="X" onclick="stayonPage()">X</button>
+        <button type="button" id="back" onclick="backtoLogin()">Logout</button>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div id="loader"></div>
+        <div class="sentPopup" id="sentPopup">
+            <h1>✅</h1>
+            <h2>Invoice Sent</h2>
+            <button type="button" id="send" onclick="sendAgain()">Send Another</button>
+            <button type="button" id="home" onclick="backtoHome()">Home</button>
+        </div>
+    </div>
+
+    <div id="container">
+        <div id="formContainer">
+            <h1>View Invoice</h1>
+            <form id="pdfForm" enctype="multipart/form-data">
+                <label for="template">Select PDF Template</label>
+                <select name="template" id="template" required>
+                    <option value="1">Template 1</option>
+                    <option value="2">Template 2</option>
+                </select><br>
+                <div class="button-container">
+                    <button type="submit">Generate PDF</button>
+                    <button id="downloadButton">Download PDF</button><br>
+                    <label for="customerEmail" id="emailText">Enter Recipient Email</label>
+                    <input type="text" id="customerEmail" name="customerEmail" placeholder="customer@gmail.com">
+                    <button id="sendButton">Send Invoice</button>
+                    <button id="newInvoiceButton">New Invoice</button>
+                </div>
+            </form>
+        </div>
+        <div id="pdfViewerContainer">
+            <iframe id="pdfViewer" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <script src="script/logout.js"></script>
+    <script>
+        // Check if the user is authenticated
+        if (!isAuthenticated()) {
+            // Redirect to login page
+            window.location.href = "/login.html";
+        }
+        // Function to check authentication status
+        function isAuthenticated() {
+            // Check if token exists in sessionStorage
+            return sessionStorage.getItem('token') !== null;
+        }
+
+        var modal = document.getElementById("myModal");
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        document.getElementById('newInvoiceButton').addEventListener('click', function(event) {
+            window.location.href = "/create";
+        });
+
+        document.getElementById('pdfForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const xmlData = sessionStorage.getItem('xmlData');
+            const template = document.getElementById('template').value;
+
+            try {
+                const response = await fetch('/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify({ xmlData, template })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    
+                    // Display the PDF in the iframe
+                    document.getElementById('pdfViewer').setAttribute('src', url);
+
+                    // Show the download button
+                    document.getElementById('downloadButton').style.display = 'block';
+                    document.getElementById('customerEmail').style.display = 'block';
+                    document.getElementById('emailText').style.display = 'block';
+                    document.getElementById('sendButton').style.display = 'block';
+                    document.getElementById('newInvoiceButton').style.marginTop = '40px';
+                    
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    alert('Error generating PDF');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', async function(event) {
+            event.preventDefault();
+            const xmlData = sessionStorage.getItem('xmlData');
+            const template = document.getElementById('template').value;
+
+            try {
+                const response = await fetch('/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify({ xmlData, template })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'invoice.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    alert('Error generating PDF');
+                }
+            } catch (error) {
+                alert('Error generating PDF');
+            }
+        });
+
+        document.getElementById('sendButton').addEventListener('click', async function(event) {
+            event.preventDefault();
+
+            var loader = document.getElementById("loader");
+            modal.style.display = "block";
+            loader.style.display = "block";
+
+            const xmlData = sessionStorage.getItem('xmlData');
+            const template = document.getElementById('template').value;
+
+            try {
+                const response = await fetch('/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify({ xmlData, template })
+                });
+                if (response.ok) {
+                    const pdfBlob = await response.blob();
+                    const pdfData = await blobToBase64(pdfBlob);
+                    const email = document.getElementById('customerEmail').value;
+
+                    // Call the endpoint to send the PDF as an attachment
+                    const sendResponse = await fetch('/invoice/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, pdfData })
+                    });
+                    if (sendResponse.ok) {
+                        loader.style.display = "none";
+                        openSentPopup();
+                    } else {
+                        console.error('Error creating invoice:', sendResponse.error);
+                    }
+                } else {
+                    alert('Error sending invoice');
+                }
+            } catch (error) {
+                console.error('Error creating invoice:', error);
+            }
+        });
+
+        async function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    resolve(reader.result.split(',')[1]);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        // invoice sent popup functions
+        let sentpopup = document.getElementById("sentPopup");
+        
+        function openSentPopup() {
+            sentpopup.classList.add("open-sent-popup");
+        }
+        
+        function sendAgain() {
+            sentpopup.classList.remove("open-sent-popup");
+            modal.style.display = "none";
+        }
+
+        function backtoHome() {
+            window.location.href = "/home";
+        }
+    </script>
+</body>
+</html>

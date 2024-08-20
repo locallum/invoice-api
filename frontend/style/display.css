@@ -1,0 +1,221 @@
+h1 {
+    font-weight: lighter;
+    text-align: left;
+    font-size: 40px;
+    margin-top: 30px;
+}
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 32px;
+    background-color: #233451;
+    margin: 0;
+    text-align: left;
+    padding: 0;
+}
+#container {
+    display: flex;
+    height: calc(100vh - 40px);
+}
+#formContainer {
+    width: 20%;
+    padding-left: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: rgba(235, 235, 235, 0.9);
+    border-radius: 0px;
+}
+#pdfViewerContainer {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    background-color: #364f7b;
+    position: relative;
+    border-radius: 0px;
+}
+#pdfViewer {
+    width: 100%;
+    height: 719px;
+}
+label {
+    font-weight: lighter;
+    font-size: 22px;
+    text-align: left;
+    display: block;
+}
+input[type="file"],
+select {
+    margin-bottom: 10px;
+    width: 45%;
+    font-size: 21px;
+    text-align: left;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.318);
+}
+.button-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+button {
+    background-color: rgb(245, 245, 245);
+    border-width: 4px;
+    border-color: rgb(0, 0, 0);
+    color: black;
+    padding: 10px 32px;
+    text-align: left;
+    display: inline-block;
+    font-size: 20px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+button:hover {
+    background-color: #233451;
+    color: whitesmoke;
+}
+.image {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+image {
+    padding: 10px 32px;
+    text-align: left;
+    background-size: cover;
+    display: inline-block;
+    margin-bottom: 15px;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/bf/Flag_of_Bosnia_and_Herzegovina.svg');
+}
+#downloadButton {
+    padding: 10px 29px;
+    display: none;
+}
+#downloadButton:hover {
+    background-color: #233451;
+    color: whitesmoke;
+}
+#sendButton {
+    padding: 10px 39px;
+    display: none;
+}
+#sendButton:hover {
+    background-color: #233451;
+    color: whitesmoke;
+}
+input[type="text"],
+select {
+    font-size: 15px;
+    width: 90%;
+    letter-spacing: 0.4px;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #585858;
+}
+.invoice-placeholder {
+    font-size: 24px;
+    position: absolute;
+    top: 40%;
+    right: 34%;
+    -webkit-text-fill-color: white;
+}
+#newInvoiceButton {
+    margin-top: 106px;
+    padding: 10px 42px;
+}
+#newInvoiceButton:hover {
+    background-color: #233451;
+    color: whitesmoke;
+}
+#customerEmail,
+#emailText {
+    display: none;
+}
+.sentPopup {
+    width: 400px;
+    background-color: white;
+    border-radius: 6px;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    text-align: center;
+    padding: 0 30px 30px;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+    box-shadow: 0 7px 7px rgb(0, 0, 0, 0.2);
+    z-index: 900;
+}
+.sentPopup h1 {
+    font-size: 48px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #4CAF50;
+}
+.sentPopup h2 {
+    font-size: 40px;
+    font-weight: normal;
+    margin-bottom: 30px;
+    color: #333;
+}
+.sentPopup button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #233451;
+    box-shadow: 0 5px 5px rgb(0, 0, 0, 0.2);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.sentPopup button:hover {
+    background-color: #4d6ea7;
+}
+.open-sent-popup {
+    visibility: visible;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+
+}
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 120px;
+    height: 120px;
+    margin: -76px 0 0 -76px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3a3a3a;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    display: none;
+}
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

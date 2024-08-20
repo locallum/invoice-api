@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The leading XML to PDF Converter for Freelancers!">
+    <title>Sherlock Register</title>
+    <link rel="stylesheet" href="/style/register.css">
+</head>
+<body>
+    <header>
+        SHERLOCK E-INVOICING 🔎
+    </header>
+
+    <h1 id="pageTitle">Sign-Up</h1>
+    <form id="registerForm" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="text" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="password" name="password2" placeholder="Confirm password" required>
+        <button type="submit">Register</button>
+    </form>
+    <a href="/" id="goBack">Already have an account?</a>
+
+    <div class="popup" id="popup">
+        <h2>Thank You!</h2>
+        <p>Your account has been created</p>
+        <button type="button" onclick="backtoLogin()">Back to Login</button>
+    </div>
+
+    <div id="errorMessage" role="alert">
+        <p></p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <script>     
+        let popup = document.getElementById("popup");
+
+        function openPopup() {
+            popup.classList.add("open-popup");
+            document.getElementById('pageTitle').hidden = true;
+            document.getElementById('registerForm').hidden = true;
+            document.getElementById('goBack').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function backtoLogin() {
+            window.location.href = "/";
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            const formDataJSON = {};
+            formData.forEach((value, key) => {
+                formDataJSON[key] = value;
+            });
+
+            const response = await fetch('/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formDataJSON)
+            })
+            if (response.ok) {
+                openPopup();
+            } else {
+                const responseText = await response.text();
+                const errorMessageIndex = responseText.indexOf('BadRequestError:');
+                if (errorMessageIndex != -1) {
+                    var errorMessage = responseText.slice(errorMessageIndex + 'BadRequestError:'.length).trim();
+                    errorMessage = errorMessage.split('<br>')[0];
+                    displayError(errorMessage);
+                }
+            }
+        });
+
+        function displayError(msg) {
+            const errorMsg = document.getElementById('errorMessage');
+            
+            const errorMessageP = document.getElementById('errorMessage').querySelector('p');
+            errorMessageP.textContent = msg;
+            
+            errorMsg.style.display = "flex";
+
+            const closeButton = errorMsg.querySelector('.close');
+            closeButton.addEventListener('click', function() {
+                errorMsg.style.display = "none";
+            });
+        }
+    </script>
+</body>
+</html>

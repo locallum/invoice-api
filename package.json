@@ -1,0 +1,42 @@
+{
+  "name": "invoice-seng2021-24t1-seng2021-24t1-w11a_sherlock",
+  "version": "1.0.0",
+  "description": "e-invoicing API",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint *.js",
+    "test": "jest --coverage --passWithNoTests",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cseteaching-unsw-edu-au/invoice-seng2021-24t1-seng2021-24t1-w11a_sherlock.git"
+  },
+  "author": "Callum Lo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cseteaching-unsw-edu-au/invoice-seng2021-24t1-seng2021-24t1-w11a_sherlock/issues"
+  },
+  "homepage": "https://github.com/cseteaching-unsw-edu-au/invoice-seng2021-24t1-seng2021-24t1-w11a_sherlock#readme",
+  "dependencies": {
+    "@google-cloud/translate": "^8.1.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "i18n-iso-countries": "^7.11.0",
+    "jest": "^29.7.0",
+    "jspdf": "^2.5.1",
+    "lint": "^1.1.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.13",
+    "supertest": "^6.3.4",
+    "translate": "^3.0.0",
+    "validator": "^13.11.0",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.0"
+  }
+}

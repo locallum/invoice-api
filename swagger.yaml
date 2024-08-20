@@ -1,0 +1,40 @@
+openapi: 3.0.0
+info:
+  title: Sherlock's Rendering API
+  description: Parses an XML File and converts it to a PDF
+  version: 1.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+
+  /get-input:
+    get:
+      summary: Get the input file
+      description: gets the input file
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: If the input invoice data is malformed, return an error message indicating the issue with the input
+        '403':
+          description: If the output format is not supported, return an error message indicating that the output format is unsupported
+        '402':
+          description: If the language is not supported, return an error indicating that the language is unsupported
+
+  /render-invoice:
+    post:
+      summary: Render the invoice
+      description: This route is used to render an electronic invoice into a human-readable format.
+      parameters:
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: If the input invoice data is malformed, return an error message indicating the issue with the input
+        '403':
+          description: If the output format is not supported, return an error message indicating that the output format is unsupported
+        '402':
+          description: If the language is not supported, return an error indicating that the language is unsupported

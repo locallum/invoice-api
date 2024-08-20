@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The leading XML to PDF Converter for Freelancers!">
+    <title>Sherlock Create Invoice</title>
+    <link rel="stylesheet" href="/style/create.css">
+    <link rel="stylesheet" href="/style/header.css">
+</head>
+<body>
+    <header>
+        SHERLOCK E-INVOICING 🔎
+        <div id="headerButtons">
+            <button id="homeButton">Home</button>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </header>
+
+    <div class="popup" id="popup">
+        <h2>Exiting Sherlock</h2>
+        <p>Are you sure you would like to logout?</p>
+        <button type="button" id="X" onclick="stayonPage()">X</button>
+        <button type="button" id="back" onclick="backtoLogin()">Logout</button>
+    </div>
+
+    <h1>Invoice Form</h1>
+    <form id="invoiceForm" enctype="multipart/form-data">
+        <h2>Invoice details</h2>
+        <label for="invoiceinId">Invoice ID</label>
+        <input type="text" id="invoiceinId" name="invoiceinId" placeholder="123a" value="123a">
+        <label for="invoicedate">Issue Date</label>
+        <input type="date" id="invoicedate" name="invoicedate" required pattern="\d{4}-\d{2}-\d{2}">
+        <label for="invoicebuyerRef">Buyer Reference ID</label>
+        <input type="text" id="invoicebuyerRef" name="invoicebuyerRef" placeholder="1093A8" value="1093A8">
+        <label for="invoicePaypid">Payment ID</label>
+        <input type="text" id="invoicePaypid" name="invoicePaypid" placeholder="109" value="109">
+        <label for="invoicePayfinancialAccId">Financial Account ID</label>
+        <input type="text" id="invoicePayfinancialAccId" name="invoicePayfinancialAccId" placeholder="1234567890" value="1234567890">
+        <label for="invoicePayaccName">Account Name</label>
+        <input type="text" id="invoicePayaccName" name="invoicePayaccName" placeholder="Account Name" value="Acc Name">
+        <label for="invoicePaybsb">Payment BSB</label>
+        <input type="text" id="invoicePaybsb" name="invoicePaybsb" placeholder="123456" value="123456">
+        
+        <h2>Company details</h2>
+        <label for="companyname">Company Name</label>
+        <input type="text" id="companyname" name="companyname" placeholder="Ebusiness Software Services Pty Ltd" value="NSW Transport">
+        <label for="companyid">Id</label>
+        <input type="text" id="companyid" name="companyid" placeholder="80647710156" value="51 824 753 556">
+        <label for="companyAddstreetAdd">Street Address</label>
+        <input type="text" id="companyAddstreetAdd" name="companyAddstreetAdd" placeholder="100 Business St" value="123 Pitt St">
+        <label for="companyAddcity">City</label>
+        <input type="text" id="companyAddcity" name="companyAddcity" placeholder="Dulwich Hill" value="Sydney">
+        <label for="companyAddpostCode">Postcode</label>
+        <input type="text" id="companyAddpostCode" name="companyAddpostCode" placeholder="2203" value="2000">
+        <label for="companyAddstate">State</label>
+        <input type="text" id="companyAddstate" name="companyAddstate" placeholder="AU" value="NSW">
+
+        <h2>Customer details</h2>
+        <label for="customername">Customer Name</label>
+        <input type="text" id="customername" name="customername" placeholder="Awolako Enterprises Pty Ltd" value="UNSW">
+        <label for="customerid">Id</label>
+        <input type="text" id="customerid" name="customerid" placeholder="73902846512" value="53 004 085 616">
+        <label for="customerAddstreetAdd">Street Address</label>
+        <input type="text" id="customerAddstreetAdd" name="customerAddstreetAdd" placeholder="Suite 123 Level 45" value="UNSW Sydney, High St">
+        <label for="customerAddcity">City</label>
+        <input type="text" id="customerAddcity" name="customerAddcity" placeholder="Homebush West" value="Sydney">
+        <label for="customerAddpostCode">Postcode</label>
+        <input type="text" id="customerAddpostCode" name="customerAddpostCode" placeholder="2140" value="2052">
+        <label for="customerAddstate">State</label>
+        <input type="text" id="customerAddstate" name="customerAddstate" placeholder="AU" value="NSW">
+        <label for="customerContactname">Name</label>
+        <input type="text" id="customerContactname" name="customerContactname" placeholder="Christine" value="Christine">
+        <label for="customerContactphone">Telephone</label>
+        <input type="text" id="customerContactphone" name="customerContactphone" placeholder="0411111111" value="012345679">
+        <label for="customerContactemail">Email</label>
+        <input type="text" id="customerContactemail" name="customerContactemail" placeholder="Ebusiness@gmail.com" value="christine@email.com">
+        
+        <h2>Entered Items</h2>
+        <table id="enteredItemsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Tax Category</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <h2>Add Items</h2>
+        <div id="itemsContainer">
+            <label for="itemname">Name</label>
+            <input type="text" id="itemname" name="itemname" placeholder="Pencils">
+            <label for="itemitId">Id</label>
+            <input type="text" id="itemitId" name="itemitId" placeholder="1">
+            <label for="itemunitPrice">Price</label>
+            <input type="text" id="itemunitPrice" name="itemunitPrice" placeholder="0.2">
+            <label for="itemquantity">Quantity</label>
+            <input type="text" id="itemquantity" name="itemquantity" placeholder="500.0">
+            <label for="itemtaxCategory">Tax Category</label>
+            <input type="text" id="itemtaxCategory" name="itemtaxCategory" placeholder="Z">
+        </div>
+        <button type="button" id="addItemButton" onclick="displayEnteredItem()">Add Item</button>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="errorMessage" role="alert">
+        <p></p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    
+    <script src="script/logout.js"></script>
+    <script>
+        // Check if the user is authenticated
+        if (!isAuthenticated()) {
+            // Redirect to login page
+            window.location.href = "/login.html";
+        }
+
+        // Function to check authentication status
+        function isAuthenticated() {
+            // Check if token exists in sessionStorage
+            return sessionStorage.getItem('token') !== null;
+        }
+
+        var formDataJSON = {
+            "customer": {
+                "address": {},
+                "contact": {}
+            },
+            "seller": {
+                "address": {},
+            },
+            "invoice": {
+                "payment": {}
+            },
+            "item": []
+        };
+
+        document.getElementById('invoiceForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            
+            if (document.getElementById("enteredItemsTable").rows.length < 2) {
+                displayError("There must be at least 1 Item");
+                return;
+            }
+            
+            formData.forEach((value, key) => {
+                if (key.startsWith("customer")) {
+                    key = key.replace('customer', '');
+                    if (key.startsWith("Add")) {
+                        key = key.replace('Add', '');
+                        formDataJSON.customer.address[key] = value;
+                    } else if (key.startsWith("Contact")) {
+                        key = key.replace('Contact', '');
+                        formDataJSON.customer.contact[key] = value;
+                    } else {
+                        formDataJSON.customer[key] = value;
+                    }
+                } else if (key.startsWith("company")) {
+                    key = key.replace('company', '');
+                    if (key.startsWith("Add")) {
+                        key = key.replace('Add', '');
+                        formDataJSON.seller.address[key] = value;
+                    } else {
+                        formDataJSON.seller[key] = value;
+                    }
+                } else if (key.startsWith("invoice")) {
+                    key = key.replace('invoice', '');
+                    if (key.startsWith("Pay")) {
+                        key = key.replace('Pay', '');
+                        formDataJSON.invoice.payment[key] = value;
+                    } else if (key.startsWith("Contact")) {
+                        key = key.replace('Contact', '');
+                        formDataJSON.seller.contact[key] = value;
+                    } else {
+                        formDataJSON.invoice[key] = value;
+                    }
+                }
+            });
+            
+            fetch('https://w13a-brownie.vercel.app/v2/api/invoice/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formDataJSON)
+            })
+            .then((response) => response.text())
+            .then(data => {
+                if (data.startsWith('{')) {
+                    displayError(JSON.parse(data).error);
+                } else {
+                    sessionStorage.setItem('xmlData', data);
+                    window.location.href = "/display";
+                }
+            })
+            .catch(error => {
+                console.error('Error creating invoice:', error);
+            });
+        });
+
+        function displayEnteredItem() {
+            const enteredItemsTableBody = document.querySelector('#enteredItemsTable tbody');
+            
+            // Get values from input fields
+            const itemName = document.getElementById('itemname').value;
+            const itemID = document.getElementById('itemitId').value;
+            const itemPrice = document.getElementById('itemunitPrice').value;
+            const itemQuantity = document.getElementById('itemquantity').value;
+            const itemTaxCategory = document.getElementById('itemtaxCategory').value;
+            
+            if (itemName == "" || itemID == "" || itemPrice == "" || itemQuantity == "" || itemTaxCategory == "") {
+                return;
+            }
+
+            // Create a row for the entered item
+            const newRow = enteredItemsTableBody.insertRow();
+
+            // Create cells for each item property
+            const nameCell = newRow.insertCell();
+            const idCell = newRow.insertCell();
+            const priceCell = newRow.insertCell();
+            const quantityCell = newRow.insertCell();
+            const taxCategoryCell = newRow.insertCell();
+
+            // Set cell content
+            nameCell.textContent = itemName;
+            idCell.textContent = itemID;
+            priceCell.textContent = itemPrice;
+            quantityCell.textContent = itemQuantity;
+            taxCategoryCell.textContent = itemTaxCategory;
+
+            // Add item to JSON object
+            const itemObject = {
+                name: itemName,
+                itId: itemID,
+                unitPrice: Number(itemPrice),
+                quantity: Number(itemQuantity),
+                taxCategory: itemTaxCategory
+            };
+
+            formDataJSON.item.push(itemObject);
+
+            // Clear the form fields after adding the item
+            document.getElementById('itemname').value = '';
+            document.getElementById('itemitId').value = '';
+            document.getElementById('itemunitPrice').value = '';
+            document.getElementById('itemquantity').value = '';
+            document.getElementById('itemtaxCategory').value = '';
+        }
+            
+        function displayError(message) {
+            const errorMsg = document.getElementById('errorMessage');
+            const errorP = errorMsg.querySelector('p');
+            errorP.textContent = message;
+            errorMsg.style.display = "flex";
+
+            const closeButton = errorMsg.querySelector('.close');
+            closeButton.addEventListener('click', function() {
+                errorMsg.style.display = "none";
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The leading XML to PDF Converter for Freelancers!">
+    <title>Sherlock Send Invoice</title>
+    <link rel="stylesheet" href="/style/validate.css">
+    <link rel="stylesheet" href="/style/header.css">
+</head>
+<body>
+    <header>
+        SHERLOCK E-INVOICING 🔎
+        <div id="headerButtons">
+            <button id="homeButton">Home</button>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </header>
+
+    <div class="popup" id="popup">
+        <h2>Exiting Sherlock</h2>
+        <p>Are you sure you would like to logout?</p>
+        <button type="button" id="X" onclick="stayonPage()">X</button>
+        <button type="button" id="back" onclick="backtoLogin()">Logout</button>
+    </div>
+
+    <div id="container">
+        <div id="formContainer">
+            <h1>Validate XML Invoice</h1>
+            <form id="pdfForm" enctype="multipart/form-data">
+                <label for="xmlFile">Select XML File</label>
+                <input type="file" name="xmlFile" id="xmlFile" required><br>
+                <div class="button-container">
+                    <button type="submit" id="submitButton">Check Invoice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="validationMessage"></div>
+    <div id="errorContainer"></div>
+
+
+    <script src="script/logout.js"></script>
+    <script>
+        // Check if the user is authenticated
+        if (!isAuthenticated()) {
+            // Redirect to login page
+            window.location.href = "/login.html";
+        }
+
+        // Function to check authentication status
+        function isAuthenticated() {
+            // Check if token exists in sessionStorage
+            return sessionStorage.getItem('token') !== null;
+        }
+
+        document.getElementById('pdfForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            if (!isXML()) { return; }
+            
+            const fileInput = document.getElementById('xmlFile');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    const xmlData = event.target.result;
+                    validate(xmlData);
+                };
+
+                reader.readAsText(file);
+            } else {
+                console.error('No file selected.');
+            }
+
+        });
+
+        function validate(xmlData) {
+            fetch('https://sandc.vercel.app/validate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/xml'
+                },
+                body: xmlData
+            })
+            .then((response) => response.text())
+            .then(data => {
+                data = JSON.parse(data);
+                if (data.results.AUNZ_PEPPOL.successful) {
+                    displayValid();
+                } else {
+                    displayInvalid(data);
+                }
+            })
+            .catch(error => {
+                console.error('Error validating invoice:', error);
+            });
+        }
+
+        function displayValid() {
+            const validationMessage = document.getElementById('validationMessage');
+            validationMessage.textContent = "Invoice is valid";
+            validationMessage.style.display = "block";
+        }
+
+        function displayInvalid(data) {
+            const validationMessage = document.getElementById('validationMessage');
+            validationMessage.textContent = "Invoice is not valid";
+            validationMessage.style.display = "block";
+            validationMessage.style.backgroundColor = "#c13f3f";
+            validationMessage.style.right = "320px";
+
+            const PEPOLtitle = document.createElement('h3');
+            PEPOLtitle.textContent = "PEPOL Errors";
+            errorContainer.appendChild(PEPOLtitle);
+            for (const error of data.results.AUNZ_PEPPOL.errors) {
+                displayError(error.breached_rule);
+            }
+            const ENtitle = document.createElement('h3');
+            ENtitle.textContent = "EN16931 Business Errors";
+            errorContainer.appendChild(ENtitle);
+            for (const error of data.results.EN16931_Syntax.errors) {
+                displayError(error.breached_rule);
+            }
+        }
+
+        function displayError(errorMessage) {
+            const errorContainer = document.getElementById('errorContainer');
+            const errorText = document.createElement('p');
+            errorText.textContent = "- " + errorMessage;
+            errorContainer.appendChild(errorText);
+        }
+
+        function isXML() {
+            const fileInput = document.getElementById('xmlFile');
+            const file = fileInput.files[0];
+            if (file.type !== 'text/xml') {
+                alert('Only XML files are allowed.');
+                fileInput.value = '';
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
